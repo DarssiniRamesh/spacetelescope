@@ -32,6 +32,16 @@ import asdf
 import inflection
 import os
 
+# URLs
+URLS = {
+    "CRDS": "https://jwst-crds.stsci.edu",
+    "DATAMODEL_SCHEMA": "http://stsci.edu/schemas/jwst_datamodel/subarray.schema",
+    "STSCI_JWST_PHASE2": "https://www.stsci.edu/jwst/phase2-public",
+    "STSCI_JWST_PROGRAM_INFO": "https://www.stsci.edu/jwst-program-info",
+    "STSCI_MAST": "https://mast.stsci.edu/",
+    "STSCI_VO": "https://mast.stsci.edu/vo-tap/api/v0.1/caom",
+}
+
 # Each amplifier is represented by 2 tuples, the first for x coordinates
 # and the second for y coordinates. Within each tuple are value for
 # starting, ending, and step size. Step size is needed for MIRI, where
@@ -987,14 +997,23 @@ SUBARRAYS_ONE_OR_FOUR_AMPS = [
     "SUBGRISMSTRIPE256",
 ]
 
-schema = asdf.schema.load_schema("http://stsci.edu/schemas/jwst_datamodel/subarray.schema")
-SUBARRAYS_PER_INSTRUMENT = {
-    "nircam": ['FULL'] + sorted(schema["properties"]["meta"]["properties"]["subarray"]["properties"]["name"]["anyOf"][2]['enum']),
-    "niriss": ['FULL'] + sorted(schema["properties"]["meta"]["properties"]["subarray"]["properties"]["name"]["anyOf"][4]['enum']),
-    "nirspec": ['FULL'] + sorted(schema["properties"]["meta"]["properties"]["subarray"]["properties"]["name"]["anyOf"][6]['enum']),
-    "miri": ['FULL'] + sorted(schema["properties"]["meta"]["properties"]["subarray"]["properties"]["name"]["anyOf"][1]['enum']),
-    "fgs": ['FULL'] + sorted(schema["properties"]["meta"]["properties"]["subarray"]["properties"]["name"]["anyOf"][0]['enum'])
-}
+try:
+    schema = asdf.schema.load_schema(URLS['DATAMODEL_SCHEMA'])
+    SUBARRAYS_PER_INSTRUMENT = {
+        "nircam": ['FULL'] + sorted(schema["properties"]["meta"]["properties"]["subarray"]["properties"]["name"]["anyOf"][2]['enum']),
+        "niriss": ['FULL'] + sorted(schema["properties"]["meta"]["properties"]["subarray"]["properties"]["name"]["anyOf"][4]['enum']),
+        "nirspec": ['FULL'] + sorted(schema["properties"]["meta"]["properties"]["subarray"]["properties"]["name"]["anyOf"][6]['enum']),
+        "miri": ['FULL'] + sorted(schema["properties"]["meta"]["properties"]["subarray"]["properties"]["name"]["anyOf"][1]['enum']),
+        "fgs": ['FULL'] + sorted(schema["properties"]["meta"]["properties"]["subarray"]["properties"]["name"]["anyOf"][0]['enum'])
+    }
+except Exception as e:
+    SUBBARRAYS_PER_INSTRUMENT = {
+        "nircam": ['FULL'],
+        "niriss": ['FULL'],
+        "nirspec": ['FULL'],
+        "miri": ['FULL'],
+        "fgs": ['FULL']
+    }
 
 # Filename suffixes that need to include the association value in the suffix in
 # order to identify the preview image file. This should only be crf and crfints,
@@ -1058,6 +1077,3 @@ MAX_LEN_TIME = 50
 MAX_LEN_TYPE = 40
 MAX_LEN_USER = 50
 MAX_LEN_VISIT = 30
-
-# STScI VAO server url
-STSCI_VO_URL = "https://mast.stsci.edu/vo-tap/api/v0.1/caom"
