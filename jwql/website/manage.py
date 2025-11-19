@@ -35,6 +35,7 @@ For more information please see:
 
 import os
 import sys
+import pathlib
 
 # --- Ensure 'jwql' is always importable by manipulating sys.path ---
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -65,11 +66,32 @@ if __name__ == "__main__":
         'thumbnail_filesystem': 'thumbnails'
         }
 
+    # PUBLIC_INTERFACE
+    # Idempotent static and data directory symlink setup
     for directory in ['filesystem', 'outputs', 'preview_image_filesystem', 'thumbnail_filesystem']:
         symlink_location = os.path.join(os.path.dirname(__file__), 'apps', 'jwql', 'static', directory_mapping[directory])
-        if not os.path.exists(symlink_location):
-            symlink_path = get_config()[directory]
-            os.symlink(symlink_path, symlink_location)
+        symlink_location_path = pathlib.Path(symlink_location)
+        symlink_target = get_config()[directory]
+        symlink_target_path = pathlib.Path(symlink_target)
+
+        if symlink_location_path.exists() or symlink_location_path.is_symlink():
+            if symlink_location_path.is_symlink():
+                try:
+                    # Check if symlink points to same resolved path
+                    if symlink_location_path.resolve() != symlink_target_path.resolve():
+                        symlink_location_path.unlink()
+                        symlink_location_path.symlink_to(symlink_target_path, target_is_directory=True)
+                    # Else, points at correct location, do nothing
+                except FileNotFoundError:
+                    # Broken symlink: remove and recreate
+                    symlink_location_path.unlink()
+                    symlink_location_path.symlink_to(symlink_target_path, target_is_directory=True)
+            else:
+                # Exists and not symlink - leave as-is (could log a warning)
+                pass
+        else:
+            # Does not exist at all, safe to create
+            symlink_location_path.symlink_to(symlink_target_path, target_is_directory=True)
 
     try:
         from django.core.management import execute_from_command_line
