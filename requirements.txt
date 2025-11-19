@@ -32,5 +32,11 @@ stsci_rtd_theme==0.0.2
 twine==3.8.0
 wtforms==3.0.1
 git+https://github.com/spacetelescope/jwst_reffiles#egg=jwst_reffiles
+
+# jwedb is NOT required for running or developing the main Django app.
+# DO NOT install jwedb here; if you need it for database tasks, install manually.
 # jwedb is not compatible with Python 3.12+ (uses deprecated 'imp' module)
+# jwedb
+
+# Editable install of the local jwql package
 -e ./jwql

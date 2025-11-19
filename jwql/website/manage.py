@@ -36,16 +36,21 @@ For more information please see:
 import os
 import sys
 
-# --- Fallback for jwql import issues ---
+# --- Ensure 'jwql' is always importable by manipulating sys.path ---
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+# Also ensure parent of jwql/ is in sys.path
+PARENT_DIR = os.path.abspath(os.path.join(PROJECT_ROOT, os.pardir))
+if PARENT_DIR not in sys.path:
+    sys.path.insert(0, PARENT_DIR)
+
+# Try importing jwql, fail with clear message if not found
 try:
     import jwql  # noqa: F401
 except ImportError:
-    sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
-    try:
-        import jwql  # Try again
-    except ImportError:
-        sys.stderr.write("Could not import 'jwql'. Ensure it is installed or present in project.\n")
-        sys.exit(1)
+    sys.stderr.write("Could not import 'jwql'. Ensure the jwql directory contains an __init__.py file and is in the project root.\n")
+    sys.exit(1)
 
 from jwql.utils.utils import get_config
 
