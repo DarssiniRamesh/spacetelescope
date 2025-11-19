@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load static %}
 
 {% block preamble %}
 
@@ -19,12 +18,12 @@
 
             <div class="d-flex justify-content-between">
                 {% for inst in inst_list %}
-                    <a class='instrument_panel' href="{% url 'jwql:instrument' inst %}">
+                    <a class='instrument_panel' href="{{ url('jwql:instrument', inst) }}">
                         <div class="instrument_frame">
                             <span class="helper"></span>
-                            <img src="{% static 'img/'|add:inst|add:'logo.png' %}" 
+                            <img src="{{ static('img/' ~ inst ~ 'logo.png') }}"
                                  width="150px"
-                                 alt="Logo link to {{ inst }}" 
+                                 alt="Logo link to {{ inst }}"
                                  title="Logo link to {{ inst }}">
                             <span class="helper"></span>
                             <span class='instrument-name'><br>{{ inst }}</span>
@@ -37,7 +36,7 @@
 
         <br>
         The JWST Quicklook Application (JWQL) is a database-driven web application and automation framework for use by the JWST instrument teams to monitor the health and stability of the JWST instruments.
-        Visit our <a href="{% url 'jwql:about' %}">about page</a> to learn more about the project.<br><br>
+        Visit our <a href="{{ url('jwql:about') }}">about page</a> to learn more about the project.<br><br>
 
         The JWQL application is currently under heavy development. The 1.0 release is expected in the fall of 2021.
 
@@ -81,7 +80,7 @@
 
         <h4>Query the Archive</h4>
 
-        <a role="button" class="btn btn-primary my-2" type="submit" href="{% url 'jwql:anomaly_query' %}">Enter Query Form</a>
+        <a role="button" class="btn btn-primary my-2" type="submit" href="{{ url('jwql:anomaly_query') }}">Enter Query Form</a>
 
         <hr>
 

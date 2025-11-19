@@ -22,17 +22,25 @@ from django.contrib.staticfiles.storage import staticfiles_storage
 from jinja2 import Environment, lexer, nodes
 from jinja2.ext import Extension
 
-
-# nosec comment added to ignore bandit security check
+# PUBLIC_INTERFACE
 def environment(**options):
-    env = Environment(**options)  # nosec
+    """
+    Provides a Jinja2 environment for the jwql project and injects
+    a 'static' global for static asset URLs and 'url' for Django URLs.
+
+    Usage in Jinja2 templates:
+        {{ static('path/to/file.css') }}
+        {{ url('namespace:name', arg) }}
+
+    Returns:
+        Configured Jinja2 Environment.
+    """
+    env = Environment(**options)
     env.globals.update({
         'static': staticfiles_storage.url,
         'url': reverse,
     })
-
     return env
-
 
 class DjangoNow(Extension):
     tags = set(['now'])
