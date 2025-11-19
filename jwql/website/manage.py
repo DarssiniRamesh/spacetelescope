@@ -52,7 +52,7 @@ except ImportError:
     sys.stderr.write("Could not import 'jwql'. Ensure the jwql directory contains an __init__.py file and is in the project root.\n")
     sys.exit(1)
 
-from jwql.utils.utils import get_config
+from jwql.utils import get_config
 
 if __name__ == "__main__":
 
