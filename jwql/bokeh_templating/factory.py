@@ -36,8 +36,12 @@ from .keyword_map import bokeh_mappings as mappings, bokeh_sequences as sequence
 
 # Figures get their own constructor so we remove references to Figures from
 # the keyword maps.
-Figure = mappings.pop("Figure")
-del sequences["figure"]
+Figure = mappings.pop("Figure", None)
+if Figure is None:
+    # If Figure is not in mappings, import it directly from bokeh.plotting
+    from bokeh.plotting import figure as Figure
+# Remove figure from sequences if it exists
+sequences.pop("figure", None)
 
 
 def mapping_factory(tool, element_type):
