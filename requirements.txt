@@ -1,42 +1,36 @@
-asdf==2.11.0
-astropy==5.0.2
-astroquery==0.4.5
-bandit==1.7.4
-beautifulsoup4==4.10.0
-bokeh==2.4.2
-codecov==2.1.12
-crds==11.10.0
-cryptography==36.0.0
-django==3.2.5
-flake8==4.0.1
-inflection==0.5.1
-ipython==8.1.0
-jinja2==3.0.3
-jsonschema==4.4.0
-jwst==1.4.3
-matplotlib==3.5.1
-nodejs==10.13.0
-numpy==1.22.2
-numpydoc==1.2
-pandas==1.4.1
-psycopg2==2.9.3
-pysiaf==0.15.0
-pytest==7.0.1
-pytest-cov==3.0.0
-scipy==1.8.0
-sphinx==4.4.0
-sphinx_rtd_theme==1.0.0
-sqlalchemy==1.4.31
-stdatamodels==0.4.0
-stsci_rtd_theme==0.0.2
-twine==3.8.0
-wtforms==3.0.1
-git+https://github.com/spacetelescope/jwst_reffiles#egg=jwst_reffiles
+# Django web app requirements for JWQL project — install-safe pins for Python 3.12 and cross-platform compatibility.
+# Do NOT include jwedb or problematic packages. Last updated to fix import errors (jsonschema, etc.)
 
-# jwedb is NOT required for running or developing the main Django app.
-# DO NOT install jwedb here; if you need it for database tasks, install manually.
-# jwedb is not compatible with Python 3.12+ (uses deprecated 'imp' module)
+Django>=3.2,<5.0
+djangorestframework>=3.12
+numpy>=1.21
+pandas>=1.4
+jsonschema>=4.0    # Explicit (required by jwql/utils/utils.py)
+requests>=2.28
+pyyaml>=6.0
+astropy>=5.0
+bokeh>=2.4
+matplotlib>=3.4
+pillow>=9.0
+scipy>=1.8
+# Database & migration support
+psycopg2-binary>=2.9
+sqlalchemy>=1.4
+alembic>=1.7
+# File handling & misc
+beautifulsoup4>=4.10
+lxml>=4.8
+tqdm>=4.64
+# Any additional requirements used in utils or main app (leave commented for optional install)
+# tqdm
+# openpyxl
+# scikit-image
+# h5py
+# The following packages are intentionally excluded due to prior install failures or deprecation:
 # jwedb
 
-# Editable install of the local jwql package
--e ./jwql
+# Optional visualization libraries
+seaborn>=0.11
+plotly>=5.6
+
+# Extra dependencies (if any) can be added below as needed by new features.
