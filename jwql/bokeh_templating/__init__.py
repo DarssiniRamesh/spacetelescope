@@ -1,1 +1,1 @@
-from .template import BokehTemplate
+"""JWQL Bokeh templating submodule."""

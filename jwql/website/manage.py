@@ -36,6 +36,17 @@ For more information please see:
 import os
 import sys
 
+# --- Fallback for jwql import issues ---
+try:
+    import jwql  # noqa: F401
+except ImportError:
+    sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+    try:
+        import jwql  # Try again
+    except ImportError:
+        sys.stderr.write("Could not import 'jwql'. Ensure it is installed or present in project.\n")
+        sys.exit(1)
+
 from jwql.utils.utils import get_config
 
 if __name__ == "__main__":
@@ -63,4 +74,13 @@ if __name__ == "__main__":
             "available on your PYTHONPATH environment variable? Did you "
             "forget to activate a virtual environment?"
         ) from exc
+
+    # Default to 0.0.0.0:3001 if not specified and running runserver
+    if (
+        len(sys.argv) >= 2
+        and sys.argv[1] == "runserver"
+        and all(":" not in arg for arg in sys.argv[2:])
+    ):
+        sys.argv.append("0.0.0.0:3001")
+
     execute_from_command_line(sys.argv)

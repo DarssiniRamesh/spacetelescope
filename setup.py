@@ -19,7 +19,7 @@ REQUIRES = [
     'codecov',
     'crds',
     'cryptography',
-    'django<=3.1.7',
+    'django<=3.2.5',
     'flake8',
     'inflection',
     'ipython',
@@ -47,10 +47,17 @@ REQUIRES = [
     'wtforms'
 ]
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
+long_description += "\n\n# Installation\nTo install as a local package (in editable mode):\n\n    pip install -e ./jwql\n"
+
 setup(
     name='jwql',
     version=VERSION,
     description=DESCRIPTION,
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     url='https://github.com/spacetelescope/jwql.git',
     author=AUTHORS,
     author_email='jwql@stsci.edu',
