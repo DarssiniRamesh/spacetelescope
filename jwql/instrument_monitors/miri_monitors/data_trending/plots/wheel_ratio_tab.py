@@ -61,7 +61,7 @@ Dependencies
 import jwql.instrument_monitors.miri_monitors.data_trending.plots.plot_functions as pf
 import jwql.instrument_monitors.miri_monitors.data_trending.utils.mnemonics as mn
 from bokeh.plotting import figure
-from bokeh.models.widgets import Panel, Div
+from bokeh.models import Panel, Div
 from bokeh.layouts import column
 
 

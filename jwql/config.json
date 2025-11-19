@@ -1,6 +1,6 @@
 {
     "admin_account": "dev",
-    "auth_mast": "",
+    "auth_mast": "placeholder_for_development",
     "client_id": "",
     "client_secret": "",
     "connection_string": "sqlite:///jwql.db",

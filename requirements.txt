@@ -37,6 +37,12 @@ psycopg2-binary>=2.9
 sqlalchemy>=1.4
 alembic>=1.7
 
+# JWST pipeline and data handling
+jwst>=1.0.0
+
+# Forms and web utilities
+wtforms>=3.0.0
+
 # The following packages are intentionally excluded due to prior install failures or deprecation:
 # jwedb
 

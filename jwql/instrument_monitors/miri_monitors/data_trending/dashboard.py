@@ -27,7 +27,7 @@ import datetime
 import os
 
 from bokeh.embed import components
-from bokeh.models.widgets import Tabs
+from bokeh.models import Tabs
 
 # import plot functions
 from .plots.power_tab import power_plots

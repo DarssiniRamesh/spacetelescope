@@ -33,7 +33,7 @@ from datetime import datetime as dt
 from math import pi
 
 from bokeh.models import Axis, ColumnDataSource, DatetimeTickFormatter, OpenURL, TapTool
-from bokeh.models.widgets import Panel, Tabs
+from bokeh.models import Panel, Tabs
 from bokeh.plotting import figure
 from bokeh.transform import cumsum
 import numpy as np

@@ -1,6 +1,6 @@
 import jwql.instrument_monitors.miri_monitors.data_trending.plots.plot_functions as pf
 from bokeh.plotting import figure
-from bokeh.models.widgets import Panel, Div
+from bokeh.models import Panel, Div
 from bokeh.models import ColumnDataSource, HoverTool
 from bokeh.layouts import column
 

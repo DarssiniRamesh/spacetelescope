@@ -34,7 +34,7 @@ import time
 
 from bokeh.io import save, output_file
 from bokeh.models import ColumnDataSource
-from bokeh.models.widgets import DataTable, DateFormatter, HTMLTemplateFormatter, TableColumn
+from bokeh.models import DataTable, DateFormatter, HTMLTemplateFormatter, TableColumn
 
 from jwql.utils.logging_functions import configure_logging, log_info, log_fail
 from jwql.utils.permissions import set_permissions

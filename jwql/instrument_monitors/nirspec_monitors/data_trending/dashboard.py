@@ -28,7 +28,7 @@ import jwql.instrument_monitors.nirspec_monitors.data_trending.utils.sql_interfa
 from jwql.utils.utils import get_config
 
 from bokeh.embed import components
-from bokeh.models.widgets import Tabs
+from bokeh.models import Tabs
 
 import datetime
 
