@@ -16,9 +16,8 @@ Use
 ---
 
     The functions within this module are intended to be imported and
-    used by ``views.py``, e.g.:
+    used by ``views.py``, e.g.::
 
-    ::
         from .data_containers import get_proposal_info
 """
 
@@ -71,7 +70,14 @@ if not ON_GITHUB_ACTIONS and not ON_READTHEDOCS:
     conf = config.get_config('astroquery')
     conf['mast'] = {'server': 'https://{}'.format(mast_flavour)}
 from astroquery.mast import Mast
-from jwedb.edb_interface import mnemonic_inventory
+
+# Make jwedb import optional - this package may not be available in all environments
+try:
+    from jwedb.edb_interface import mnemonic_inventory
+    HAS_JWEDB = True
+except ImportError:
+    HAS_JWEDB = False
+    mnemonic_inventory = None
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 if not ON_GITHUB_ACTIONS and not ON_READTHEDOCS:
@@ -390,49 +396,53 @@ def get_edb_components(request):
             mnemonic_exploration_form = MnemonicExplorationForm(request.POST,
                                                                 prefix='mnemonic_exploration')
             if mnemonic_exploration_form.is_valid():
-                mnemonic_exploration_result, meta = mnemonic_inventory()
+                if not HAS_JWEDB or mnemonic_inventory is None:
+                    mnemonic_exploration_result = 'unavailable'
+                    meta = {}
+                else:
+                    mnemonic_exploration_result, meta = mnemonic_inventory()
 
-                # loop over filled fields and implement simple AND logic
-                for field in mnemonic_exploration_form.fields:
-                    field_value = mnemonic_exploration_form[field].value()
-                    if field_value != '':
-                        column_name = mnemonic_exploration_form[field].label
+                    # loop over filled fields and implement simple AND logic
+                    for field in mnemonic_exploration_form.fields:
+                        field_value = mnemonic_exploration_form[field].value()
+                        if field_value != '':
+                            column_name = mnemonic_exploration_form[field].label
 
-                        # matching indices in table (case-insensitive)
-                        index = [
-                            i for i, item in enumerate(mnemonic_exploration_result[column_name]) if
-                            re.search(field_value, item, re.IGNORECASE)
-                        ]
-                        mnemonic_exploration_result = mnemonic_exploration_result[index]
+                            # matching indices in table (case-insensitive)
+                            index = [
+                                i for i, item in enumerate(mnemonic_exploration_result[column_name]) if
+                                re.search(field_value, item, re.IGNORECASE)
+                            ]
+                            mnemonic_exploration_result = mnemonic_exploration_result[index]
 
-                mnemonic_exploration_result.n_rows = len(mnemonic_exploration_result)
+                    mnemonic_exploration_result.n_rows = len(mnemonic_exploration_result)
 
-                # generate tables for display and download in web app
-                display_table = copy.deepcopy(mnemonic_exploration_result)
+                    # generate tables for display and download in web app
+                    display_table = copy.deepcopy(mnemonic_exploration_result)
 
-                # temporary html file,
-                # see http://docs.astropy.org/en/stable/_modules/astropy/table/
-                tmpdir = tempfile.mkdtemp()
-                file_name_root = 'mnemonic_exploration_result_table'
-                path_for_html = os.path.join(tmpdir, '{}.html'.format(file_name_root))
-                with open(path_for_html, 'w') as tmp:
-                    display_table.write(tmp, format='jsviewer')
-                mnemonic_exploration_result.html_file_content = open(path_for_html, 'r').read()
+                    # temporary html file,
+                    # see http://docs.astropy.org/en/stable/_modules/astropy/table/
+                    tmpdir = tempfile.mkdtemp()
+                    file_name_root = 'mnemonic_exploration_result_table'
+                    path_for_html = os.path.join(tmpdir, '{}.html'.format(file_name_root))
+                    with open(path_for_html, 'w') as tmp:
+                        display_table.write(tmp, format='jsviewer')
+                    mnemonic_exploration_result.html_file_content = open(path_for_html, 'r').read()
 
-                # pass on meta data to have access to total number of mnemonics
-                mnemonic_exploration_result.meta = meta
+                    # pass on meta data to have access to total number of mnemonics
+                    mnemonic_exploration_result.meta = meta
 
-                # save file locally to be available for download
-                static_dir = os.path.join(settings.BASE_DIR, 'static')
-                ensure_dir_exists(static_dir)
-                file_for_download = '{}.csv'.format(file_name_root)
-                path_for_download = os.path.join(static_dir, file_for_download)
-                display_table.write(path_for_download, format='ascii.fixed_width',
-                                    overwrite=True, delimiter=',', bookend=False)
-                mnemonic_exploration_result.file_for_download = file_for_download
+                    # save file locally to be available for download
+                    static_dir = os.path.join(settings.BASE_DIR, 'static')
+                    ensure_dir_exists(static_dir)
+                    file_for_download = '{}.csv'.format(file_name_root)
+                    path_for_download = os.path.join(static_dir, file_for_download)
+                    display_table.write(path_for_download, format='ascii.fixed_width',
+                                        overwrite=True, delimiter=',', bookend=False)
+                    mnemonic_exploration_result.file_for_download = file_for_download
 
-                if mnemonic_exploration_result.n_rows == 0:
-                    mnemonic_exploration_result = 'empty'
+                    if mnemonic_exploration_result.n_rows == 0:
+                        mnemonic_exploration_result = 'empty'
 
             # create forms for search fields not clicked
             mnemonic_name_search_form = MnemonicSearchForm(prefix='mnemonic_name_search')
@@ -932,6 +942,7 @@ def get_thumbnails_all_instruments(parameters):
     anomalies = parameters['anomalies']
 
     thumbnails_subset = []
+    filenames = []
 
     for inst in parameters['instruments']:
         # Make sure instruments are of the proper format (e.g. "Nircam")
@@ -973,7 +984,7 @@ def get_thumbnails_all_instruments(parameters):
 
         # Get list of all thumbnails
         thumbnail_list_file = f"{THUMBNAIL_LISTFILE}_{inst.lower()}.txt"
-        thumbnail_inst_list = retrieve_filelist(os.path.join(THUMBNAIL_FILESYSTEM, THUMBNAIL_LISTFILE))
+        thumbnail_inst_list = retrieve_filelist(os.path.join(THUMBNAIL_FILESYSTEM, thumbnail_list_file))
 
         # Get subset of thumbnail images that match the filenames
         thumbnails_inst_subset = [os.path.basename(item) for item in thumbnail_inst_list if
