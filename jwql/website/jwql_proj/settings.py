@@ -157,16 +157,25 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # STATICFILES_DIRS contains additional locations of static files
 # The app-level static directory (jwql/website/apps/jwql/static) is automatically discovered via APP_DIRS
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static/"),
-]
+# Only include the project-level static directory if it exists and has content beyond .gitkeep
+STATICFILES_DIRS = []
+
+# Check if project-level static directory exists and add it
+project_static_dir = os.path.join(BASE_DIR, "static")
+if os.path.exists(project_static_dir) and os.path.isdir(project_static_dir):
+    # Check if there's more than just .gitkeep in the directory
+    static_files = [f for f in os.listdir(project_static_dir) if not f.startswith('.')]
+    if static_files:
+        STATICFILES_DIRS.append(project_static_dir)
 
 # Ensure static files are served in DEBUG mode
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
+
+# Note: STATIC_ROOT is only needed when running collectstatic for production
+# In DEBUG mode, Django serves static files automatically from STATICFILES_DIRS and app static directories

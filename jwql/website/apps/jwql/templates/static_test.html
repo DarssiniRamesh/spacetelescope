@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Static Files Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-item { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+        .success { background-color: #d4edda; }
+        .error { background-color: #f8d7da; }
+    </style>
+</head>
+<body>
+    <h1>JWQL Static Files Configuration Test</h1>
+    
+    <div class="test-item">
+        <h2>Static URL Configuration</h2>
+        <p>STATIC_URL is set to: <code>{{ static('') }}</code></p>
+    </div>
+    
+    <div class="test-item">
+        <h2>CSS Files Test</h2>
+        <p>Bootstrap CSS: <code>{{ static('css/bootstrap.min.css') }}</code></p>
+        <p>JWQL CSS: <code>{{ static('css/jwql.css') }}</code></p>
+        <link rel="stylesheet" href="{{ static('css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ static('css/jwql.css') }}">
+    </div>
+    
+    <div class="test-item">
+        <h2>JavaScript Files Test</h2>
+        <p>jQuery: <code>{{ static('js/jquery-3.3.1.min.js') }}</code></p>
+        <p>JWQL JS: <code>{{ static('js/jwql.js') }}</code></p>
+        <script src="{{ static('js/jquery-3.3.1.min.js') }}"></script>
+        <script src="{{ static('js/jwql.js') }}"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                if (typeof jQuery !== 'undefined') {
+                    document.body.innerHTML += '<div class="test-item success"><h3>✓ jQuery loaded successfully</h3></div>';
+                } else {
+                    document.body.innerHTML += '<div class="test-item error"><h3>✗ jQuery failed to load</h3></div>';
+                }
+            });
+        </script>
+    </div>
+    
+    <div class="test-item">
+        <h2>Image Files Test</h2>
+        <p>JWQL Logo: <img src="{{ static('img/jwql_logo_short_transparent.png') }}" width="50" alt="JWQL Logo"></p>
+    </div>
+    
+    <div class="test-item">
+        <h2>Instructions</h2>
+        <p>If all resources load correctly, the bootstrap and JWQL styles should be applied, and you should see a success message for jQuery.</p>
+        <p>Check the browser console and network tab for any 404 errors on static files.</p>
+    </div>
+</body>
+</html>

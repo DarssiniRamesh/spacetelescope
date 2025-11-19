@@ -206,6 +206,30 @@ def about(request):
     return render(request, template, context)
 
 
+# PUBLIC_INTERFACE
+def static_test(request):
+    """Generate a static files configuration test page
+    
+    This page is used to verify that static files (CSS, JS, images) 
+    are being served correctly by Django.
+
+    Parameters
+    ----------
+    request : HttpRequest object
+        Incoming request from the webpage
+
+    Returns
+    -------
+    HttpResponse object
+        Outgoing response sent to the webpage
+    """
+
+    template = 'static_test.html'
+    context = {'inst': ''}
+
+    return render(request, template, context)
+
+
 def api_landing(request):
     """Generate the ``api`` page
 

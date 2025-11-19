@@ -377,7 +377,18 @@ function update_archive_page(inst, base_url) {
             document.getElementById("loading").style.display = "none";
             document.getElementById("proposal-array").style.display = "block";
             };
-    }});
+        },
+        error: function(xhr, status, error) {
+            // Handle AJAX errors gracefully
+            console.error('AJAX Error:', status, error);
+            console.error('Response:', xhr.responseText);
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("proposal-array").innerHTML = '<div class="alert alert-warning"><strong>Error loading data:</strong> ' + 
+                'Unable to retrieve archive data. Status: ' + status + 
+                '. Please check the browser console for more details or try refreshing the page.</div>';
+            document.getElementById("proposal-array").style.display = "block";
+        }
+    });
 };
 
 
@@ -528,7 +539,18 @@ function update_thumbnails_page(inst, proposal, base_url) {
             // Replace loading screen with the proposal array div
             document.getElementById("loading").style.display = "none";
             document.getElementById("thumbnail-array").style.display = "block";
-        }});
+        },
+        error: function(xhr, status, error) {
+            // Handle AJAX errors gracefully
+            console.error('AJAX Error:', status, error);
+            console.error('Response:', xhr.responseText);
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("thumbnail-array").innerHTML = '<div class="alert alert-warning"><strong>Error loading thumbnails:</strong> ' + 
+                'Unable to retrieve thumbnail data. Status: ' + status + 
+                '. Please check the browser console for more details or try refreshing the page.</div>';
+            document.getElementById("thumbnail-array").style.display = "block";
+        }
+    });
 };
 
 /**
@@ -548,7 +570,18 @@ function update_thumbnails_query_page(base_url) {
             // Replace loading screen with the proposal array div
             document.getElementById("loading").style.display = "none";
             document.getElementById("thumbnail-array").style.display = "block";
-        }});
+        },
+        error: function(xhr, status, error) {
+            // Handle AJAX errors gracefully
+            console.error('AJAX Error:', status, error);
+            console.error('Response:', xhr.responseText);
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("thumbnail-array").innerHTML = '<div class="alert alert-warning"><strong>Error loading query results:</strong> ' + 
+                'Unable to retrieve query data. Status: ' + status + 
+                '. Please check the browser console for more details or try refreshing the page.</div>';
+            document.getElementById("thumbnail-array").style.display = "block";
+        }
+    });
 };
 
 /**

@@ -55,6 +55,9 @@ urlpatterns = [
 
     # Home
     path('', views.home, name='home'),
+    
+    # Static files test page (for debugging)
+    path('static-test/', views.static_test, name='static_test'),
 
     # MIRI-specific views
     path('miri/miri_data_trending/', views.miri_data_trending, name='miri_data_trending'),
