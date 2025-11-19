@@ -28,7 +28,25 @@ import bokeh
 import jwql
 from jwql.utils.constants import JWST_INSTRUMENT_NAMES, MONITORS, URL_DICT
 
+# Defensive fallback: If JWST_INSTRUMENT_NAMES does not include all expected instruments,
+# define a robust function to always provide the core set. This prevents homepage failures.
+DEFAULT_INSTRUMENTS = ['niriss', 'nircam', 'nirspec', 'miri', 'fgs']
 
+def get_instruments_safe():
+    """Return a robust list of instrument names, always including core JWST instruments."""
+    try:
+        # If present and non-empty, return the constant (with all required instruments)
+        instruments = list(JWST_INSTRUMENT_NAMES)
+        if instruments and isinstance(instruments, (list, tuple)):
+            for core in DEFAULT_INSTRUMENTS:
+                if core not in instruments:
+                    instruments.append(core)
+            return instruments
+    except Exception:
+        pass
+    return DEFAULT_INSTRUMENTS
+
+# PUBLIC_INTERFACE
 def base_context(request):
     """Provide the context needed for the ``base.html`` template.
 
@@ -45,10 +63,11 @@ def base_context(request):
     """
 
     context = {}
-    context['inst_list'] = JWST_INSTRUMENT_NAMES
+    # Use a robust helper to always provide valid instruments list
+    context['inst_list'] = get_instruments_safe()
     context['tools'] = MONITORS
-    context['version'] = jwql.__version__
-    context['bokeh_version'] = bokeh.__version__
+    context['version'] = getattr(jwql, "__version__", "dev")
+    context['bokeh_version'] = getattr(bokeh, "__version__", "unknown")
     context['url_dict'] = URL_DICT
 
     return context
