@@ -57,11 +57,18 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # CSRF protection disabled for development - THIS IS INSECURE AND SHOULD NOT BE USED IN PRODUCTION
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# WARNING: CSRF protection has been disabled for development purposes only.
+# This configuration is INSECURE and should NEVER be used in production.
+# Re-enable CsrfViewMiddleware and remove these settings before deploying to production.
+CSRF_USE_SESSIONS = False
+CSRF_COOKIE_SECURE = False  # Only for development; should be True in production
 
 ROOT_URLCONF = 'jwql.website.jwql_proj.urls'
 
