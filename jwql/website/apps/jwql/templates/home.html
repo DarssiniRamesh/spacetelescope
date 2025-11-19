@@ -16,7 +16,7 @@
 
             <div class="d-flex justify-content-between">
                 {% for inst in inst_list %}
-                    <a class='instrument_panel' href="{{ url('jwql:instrument', inst) }}">
+                    <a class='instrument_panel' href="{{ url('jwql:instrument', args=[inst]) }}">
                         <div class="instrument_frame">
                             <span class="helper"></span>
                             <img src="{{ static('img/' ~ inst ~ 'logo.png') }}"
