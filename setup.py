@@ -25,7 +25,7 @@ REQUIRES = [
     'ipython',
     'jinja2',
     'jsonschema',
-    'jwedb>=0.0.3',
+    # 'jwedb>=0.0.3',  # Temporarily removed: incompatible with Python 3.12 ('imp' module error)
     'jwst',
     'jwst_reffiles',
     'matplotlib',
