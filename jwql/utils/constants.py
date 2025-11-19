@@ -12,7 +12,7 @@ Authors
 Use
 ---
     This variables within this module are intended to be directly
-    imported, e.g.:
+    imported, e.g..:
     ::
 
         from jwql.utils.constants import JWST_INSTRUMENT_NAMES
@@ -24,7 +24,25 @@ References
     ``utils.py``
 """
 
-import inflection
+# Import inflection with a fallback guard
+try:
+    import inflection
+except ImportError:
+    # Minimal fallback implementation for inflection.titleize()
+    # This allows the module to load even if inflection is not yet installed
+    class _InflectionFallback:
+        @staticmethod
+        def titleize(text):
+            """Minimal titleize implementation: capitalize words and replace underscores with spaces."""
+            return ' '.join(word.capitalize() for word in text.replace('_', ' ').split())
+    
+    inflection = _InflectionFallback()
+    import warnings
+    warnings.warn(
+        "inflection package not found. Using minimal fallback. "
+        "Install with: pip install inflection>=0.5.1",
+        ImportWarning
+    )
 
 # Each amplifier is represented by 2 tuples, the first for x coordinates
 # and the second for y coordinates. Within each tuple are value for
