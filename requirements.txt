@@ -3,34 +3,40 @@
 
 Django>=3.2,<5.0
 djangorestframework>=3.12
-numpy>=1.21
-pandas>=1.4
-jsonschema>=4.0    # Explicit (required by jwql/utils/utils.py)
-requests>=2.28
-pyyaml>=6.0
-astropy>=5.0
+
+# Core scientific stack
+numpy>=1.24.0,<2.0.0
+pandas>=1.5.0,<3.0.0
+astropy>=5.0.0,<7.0.0
+
+# Util & validation deps
+inflection>=0.5.1,<0.6.0
+jsonschema>=4.0.0,<5.0.0
+requests>=2.28.0,<3.0.0
+PyYAML>=6.0.0,<7.0.0
+
+# AWS and Cloud (used in monitor_utils etc)
+boto3>=1.26.0,<2.0.0
+
+# Visualization and plotting
 bokeh>=2.4
 matplotlib>=3.4
+seaborn>=0.11
+plotly>=5.6
 pillow>=9.0
+
+# Analysis and convenience tools
 scipy>=1.8
-# Database & migration support
+tqdm>=4.64
+beautifulsoup4>=4.10
+lxml>=4.8
+
+# Files and database
 psycopg2-binary>=2.9
 sqlalchemy>=1.4
 alembic>=1.7
-# File handling & misc
-beautifulsoup4>=4.10
-lxml>=4.8
-tqdm>=4.64
-# Any additional requirements used in utils or main app (leave commented for optional install)
-# tqdm
-# openpyxl
-# scikit-image
-# h5py
+
 # The following packages are intentionally excluded due to prior install failures or deprecation:
 # jwedb
-
-# Optional visualization libraries
-seaborn>=0.11
-plotly>=5.6
 
 # Extra dependencies (if any) can be added below as needed by new features.
