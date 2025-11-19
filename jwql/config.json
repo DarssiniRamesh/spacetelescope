@@ -1,0 +1,32 @@
+{
+    "admin_account": "dev",
+    "auth_mast": "",
+    "client_id": "",
+    "client_secret": "",
+    "connection_string": "",
+    "database": {
+        "engine": "django.db.backends.sqlite3",
+        "name": "jwql.db",
+        "user": "",
+        "password": "",
+        "host": "",
+        "port": ""
+    },
+    "django_secret_key": "30d92ec155becb5ea9a55f76dbb33705542d54bf5aaaa1fbb511987a7a1f10d4",
+    "jwql_dir": "/home/kavia/workspace/code-generation/spacetelescope/jwql",
+    "jwql_version": "1.0.0",
+    "server_type": "development",
+    "log_dir": "/home/kavia/workspace/code-generation/spacetelescope/logs",
+    "mast_token": "",
+    "mast_base_url": "https://mast.stsci.edu",
+    "mast_request_url": "https://mast.stsci.edu/api/v0/invoke",
+    "outputs": "/home/kavia/workspace/code-generation/spacetelescope/outputs",
+    "preview_image_filesystem": "/home/kavia/workspace/code-generation/spacetelescope/preview_images",
+    "filesystem": "/home/kavia/workspace/code-generation/spacetelescope/filesystem",
+    "setup_file": "",
+    "test_data": "/home/kavia/workspace/code-generation/spacetelescope/test_data",
+    "test_dir": "/home/kavia/workspace/code-generation/spacetelescope/tests",
+    "thumbnail_filesystem": "/home/kavia/workspace/code-generation/spacetelescope/thumbnails",
+    "cores": "4",
+    "server_name": "localhost"
+}
