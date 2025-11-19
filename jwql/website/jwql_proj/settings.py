@@ -157,8 +157,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+# STATICFILES_DIRS contains additional locations of static files
+# The app-level static directory (jwql/website/apps/jwql/static) is automatically discovered via APP_DIRS
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static/"),
-    get_config()['jwql_dir']
+]
+
+# Ensure static files are served in DEBUG mode
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
