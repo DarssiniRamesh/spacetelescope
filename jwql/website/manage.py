@@ -17,7 +17,7 @@ Use
 
         python manage.py runserver
 
-    To start the interactive shellL:
+    To start the interactive shell:
     ::
 
         python manage.py shell
@@ -36,6 +36,7 @@ For more information please see:
 import os
 import sys
 import pathlib
+import shutil
 
 # --- Ensure 'jwql' is always importable by manipulating sys.path ---
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -55,8 +56,43 @@ except ImportError:
 
 from jwql.utils import get_config
 
-if __name__ == "__main__":
+def ensure_idempotent_symlink(target_path: pathlib.Path, symlink_path: pathlib.Path):
+    """
+    PUBLIC_INTERFACE
+    Ensure that a symlink at symlink_path points to target_path,
+    handling all edge cases:
+     - If symlink exists and points correctly: do nothing.
+     - If symlink exists and is broken/points elsewhere: remove and make new.
+     - If a file or dir exists: safely remove before creating the symlink.
+     - If nothing exists: ensure parent exists, then create symlink.
 
+    Args:
+        target_path (Path): The target to symlink to.
+        symlink_path (Path): The symlink path to create.
+    """
+    # Absolute resolution
+    target_path_abs = target_path.resolve()
+    # covers both valid and broken symlinks
+    if symlink_path.exists() or symlink_path.is_symlink():
+        if symlink_path.is_symlink():
+            try:
+                cur_target = symlink_path.resolve(strict=True)
+                if cur_target == target_path_abs:
+                    return
+                # Symlink points elsewhere, remove it
+                symlink_path.unlink()
+            except FileNotFoundError:
+                # Broken symlink, remove it
+                symlink_path.unlink()
+        elif symlink_path.is_dir():
+            shutil.rmtree(symlink_path)
+        else:
+            symlink_path.unlink()
+    # Make dirs for parent if needed
+    symlink_path.parent.mkdir(parents=True, exist_ok=True)
+    symlink_path.symlink_to(target_path_abs, target_is_directory=True)
+
+if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "jwql_proj.settings")
 
     directory_mapping = {
@@ -64,34 +100,17 @@ if __name__ == "__main__":
         'outputs': 'outputs',
         'preview_image_filesystem': 'preview_images',
         'thumbnail_filesystem': 'thumbnails'
-        }
+    }
 
     # PUBLIC_INTERFACE
-    # Idempotent static and data directory symlink setup
+    # Fully idempotent symlink setup for Django static/data handling
+    config = get_config()
     for directory in ['filesystem', 'outputs', 'preview_image_filesystem', 'thumbnail_filesystem']:
         symlink_location = os.path.join(os.path.dirname(__file__), 'apps', 'jwql', 'static', directory_mapping[directory])
         symlink_location_path = pathlib.Path(symlink_location)
-        symlink_target = get_config()[directory]
+        symlink_target = config[directory]
         symlink_target_path = pathlib.Path(symlink_target)
-
-        if symlink_location_path.exists() or symlink_location_path.is_symlink():
-            if symlink_location_path.is_symlink():
-                try:
-                    # Check if symlink points to same resolved path
-                    if symlink_location_path.resolve() != symlink_target_path.resolve():
-                        symlink_location_path.unlink()
-                        symlink_location_path.symlink_to(symlink_target_path, target_is_directory=True)
-                    # Else, points at correct location, do nothing
-                except FileNotFoundError:
-                    # Broken symlink: remove and recreate
-                    symlink_location_path.unlink()
-                    symlink_location_path.symlink_to(symlink_target_path, target_is_directory=True)
-            else:
-                # Exists and not symlink - leave as-is (could log a warning)
-                pass
-        else:
-            # Does not exist at all, safe to create
-            symlink_location_path.symlink_to(symlink_target_path, target_is_directory=True)
+        ensure_idempotent_symlink(symlink_target_path, symlink_location_path)
 
     try:
         from django.core.management import execute_from_command_line
@@ -111,3 +130,4 @@ if __name__ == "__main__":
         sys.argv.append("0.0.0.0:3001")
 
     execute_from_command_line(sys.argv)
+
