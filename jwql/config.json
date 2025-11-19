@@ -3,7 +3,7 @@
     "auth_mast": "",
     "client_id": "",
     "client_secret": "",
-    "connection_string": "",
+    "connection_string": "sqlite:///jwql.db",
     "database": {
         "engine": "django.db.backends.sqlite3",
         "name": "jwql.db",

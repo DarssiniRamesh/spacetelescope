@@ -134,10 +134,12 @@ def load_connection(connection_string):
         https://github.com/spacetelescope/acsql/blob/master/acsql/database/database_interface.py
     """
     engine = create_engine(connection_string, echo=False)
-    base = declarative_base(engine)
+    base = declarative_base()
+    base.metadata.bind = engine
     Session = sessionmaker(bind=engine)
     session = Session()
-    meta = MetaData(engine)
+    meta = MetaData()
+    meta.bind = engine
 
     return session, base, engine, meta
 
